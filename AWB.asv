@@ -1,0 +1,10 @@
+function imOut = AWB(imIn)
+imR = imIn(:,:,1);
+imG = imIn(:,:,2);
+imB = imIn(:,:,3);
+
+R_avg = 
+G_avg =
+B_avg =
+
+end

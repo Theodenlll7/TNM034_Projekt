@@ -9,6 +9,7 @@ function id = tnm034(im)
 % and ‘0’ for all other faces.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Your program code.
-
+id = -1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+end
