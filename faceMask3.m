@@ -1,5 +1,6 @@
-function mask = faceMask2(imIn)
-    
+function mask = faceMask3(imIn)
+    % Edge mask
+
     imGray = rgb2gray(imIn);
     
     sobX = [-1 -2 -1; 
