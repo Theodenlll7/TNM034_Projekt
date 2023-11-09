@@ -10,6 +10,8 @@ function id = tnm034(im)
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Your program code.
 id = -1;
+[eye1,eye2] = findEyes(im);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 end
