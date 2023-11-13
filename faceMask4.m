@@ -1,4 +1,5 @@
 function mask = faceMask4(imIn)
+    %% inte standard mask från rapport
     jm = rgb2lab(imIn);
     vm = mat2gray(jm(:,:,3));
     bw = im2bw(vm);

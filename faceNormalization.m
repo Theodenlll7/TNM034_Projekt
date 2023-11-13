@@ -1,35 +1,42 @@
 function normalized_img = faceNormalization(img, eye1, eye2)
     % Calculate the angle between the eyes
-    angle = atan2(eye2(2) - eye1(2), eye2(1) - eye1(1));
-
-    % Convert the angle from radians to degrees
-    angle_degrees = rad2deg(angle);
+    if eye1(1) > eye2(1)
+        dummy = eye2;
+        eye2 = eye1;
+        eye1 = dummy;
+    end
+    angle = (atan2(eye2(2) - eye1(2), eye2(1) - eye1(1)));
 
     % Rotate the image to make the eyes horizontal
-    rotated_img = imrotate(img, angle_degrees, 'bilinear', 'crop');
+    rotated_img = imrotate(img, rad2deg(angle), 'bicubic', 'crop');
     
     % Calculate the center of the eyes in the rotated image
     eye_center = [(eye1(1) + eye2(1)) / 2, (eye1(2) + eye2(2)) / 2];
- 
 
-    % Calculate the translation needed to center the eyes
-    translation = round(abs(size(rotated_img(:,:,1)) / 2 - eye_center));
 
-    % Translate the rotated image
-    translated_img = imtranslate(rotated_img, translation, 'bilinear', 'FillValues', 255);
+    %% Gör så distance_between_eyes är densamma för alla bilder, dvs skala om bilden
 
-    % Crop the translated image to ensure a consistent size
-    [rows, cols, ~] = size(img);
-    cropped_img = imcrop(translated_img, [1, 1, cols - 1, rows - 1]);
+    % Calculate the distance between the eyes
+    distance_between_eyes = norm(eye2 - eye1);
 
-    % Display the original, rotated, translated, and normalized images for comparison
-    %figure;
-    %subplot(1, 4, 1), imshow(img), title('Original Image');
-    %subplot(1, 4, 2), imshow(rotated_img), title('Rotated Image');
-    %subplot(1, 4, 3), imshow(translated_img), title('Translated Image');
-    %subplot(1, 4, 4), imshow(cropped_img), title('Cropped Image');
+    % Calculate the cropping window
+    crop_width = 50 + distance_between_eyes / 2;
+    crop_height_above = 100;
+    crop_height_below = 150;
+
+    crop_x = round([eye_center(1) - crop_width, eye_center(1) + crop_width]);
+    crop_y = round([eye_center(2) - crop_height_above, eye_center(2) + crop_height_below]);
+
+    % Ensure the cropping window stays within the image boundaries
+    crop_x = max(1, crop_x);
+    crop_x = min(size(rotated_img, 2), crop_x);
+    crop_y = max(1, crop_y);
+    crop_y = min(size(rotated_img, 1), crop_y);
+
+    % Crop the image with the fixed window
+    cropped_img = rotated_img(crop_y(1):crop_y(2), crop_x(1):crop_x(2), :);
+
 
     % Return the normalized image without resizing
-    cropped_img = drawX(cropped_img, eye_center(1), eye_center(2));
     normalized_img = cropped_img;
 end
