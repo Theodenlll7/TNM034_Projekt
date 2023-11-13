@@ -6,9 +6,8 @@ function normalized_img = faceNormalization(img, eye1, eye2)
     angle_degrees = rad2deg(angle);
 
     % Rotate the image to make the eyes horizontal
-    rotated_img = imrotate(img, -angle_degrees, 'bilinear', 'crop');
-    size(rotated_img)
-
+    rotated_img = imrotate(img, angle_degrees, 'bilinear', 'crop');
+    
     % Calculate the center of the eyes in the rotated image
     eye_center = [(eye1(1) + eye2(1)) / 2, (eye1(2) + eye2(2)) / 2];
  
@@ -17,7 +16,7 @@ function normalized_img = faceNormalization(img, eye1, eye2)
     translation = round(abs(size(rotated_img(:,:,1)) / 2 - eye_center));
 
     % Translate the rotated image
-    translated_img = imtranslate(rotated_img, translation, 'bilinear', 'FillValues', 0);
+    translated_img = imtranslate(rotated_img, translation, 'bilinear', 'FillValues', 255);
 
     % Crop the translated image to ensure a consistent size
     [rows, cols, ~] = size(img);
@@ -31,5 +30,6 @@ function normalized_img = faceNormalization(img, eye1, eye2)
     %subplot(1, 4, 4), imshow(cropped_img), title('Cropped Image');
 
     % Return the normalized image without resizing
+    cropped_img = drawX(cropped_img, eye_center(1), eye_center(2));
     normalized_img = cropped_img;
 end

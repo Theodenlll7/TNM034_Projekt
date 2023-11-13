@@ -12,6 +12,10 @@ function id = tnm034(im)
 id = -1;
 [eye1,eye2] = findEyes(im);
 
+normalized_img = faceNormalization(im,eye1,eye2);
+
+imshow(normalized_img)
+%imshow(normalized_img);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 end
