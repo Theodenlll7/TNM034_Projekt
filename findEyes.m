@@ -17,7 +17,7 @@ function [eye1,eye2] = findEyes(imIn)
     map = dilationDisk(eyeMap(colorCorrection(imIn)), 6);
     
     % Mask the eye map to the area where eyes can be
-    map = map .* eyesWindow(imCorrected);
+    map = map .* eyesWindow(imCorrected.*mask1);
     
     % Apply the combined face mask to the eye map
     filt = map .* mask;

@@ -24,8 +24,9 @@ function imOut = eyesWindow(imIn)
     % Mask creation
     [n, m, ~] = size(imIn);
     mask = zeros(n,m);
+    
     mask(round((ce(2)-1.1*n/3)):round((ce(2)-n/9)), round(ce(1)-m/4):round(ce(1)+m/4),1) = 1;
-
+    
     % Final Output, a masked version of the input
     imOut = mask;
 end

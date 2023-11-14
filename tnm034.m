@@ -9,13 +9,11 @@ function id = tnm034(im)
 % and ‘0’ for all other faces.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Your program code.
-id = -1;
 [eye1,eye2] = findEyes(im);
 
 normalized_img = faceNormalization(im,eye1,eye2);
 
-imshow(normalized_img)
-%imshow(normalized_img);
+id = getFaceId(normalized_img, 1.5)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 end
