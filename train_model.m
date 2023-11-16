@@ -1,8 +1,11 @@
 % Load face images from a folder
-imageDir = 'Faces/';
-testimages = dir(fullfile(imageDir, 'db1*.jpg'));
-numImages = numel(testimages);
-
+try
+    imageDir = 'Faces/';
+    testimages = dir(fullfile(imageDir, 'db1*.jpg'));
+    numImages = numel(testimages);
+catch
+    disp("Wrong file path for train_model")
+end    
 % Read images into a cell array
 faceData = cell(1, numImages);
 for i = 1:numImages

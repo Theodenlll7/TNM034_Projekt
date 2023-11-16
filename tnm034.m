@@ -12,8 +12,8 @@ function id = tnm034(im)
 [eye1,eye2] = findEyes(im);
 
 normalized_img = faceNormalization(im,eye1,eye2);
-
-id = getFaceId(normalized_img, 1.5)
+imshow(normalized_img)
+id = getFaceId(normalized_img, 1000); % A normal dist between two difrent images is < 0.9*10^6
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 end

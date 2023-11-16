@@ -23,12 +23,10 @@ function [eye1,eye2] = findEyes(imIn)
     filt = map .* mask;
 
     % Threshold the filtered map to keep only significant regions
-    filtMask = max(max(filt)) * 0.8 < filt;
-
+    filtMask = max(max(filt)) * 0.7 < filt;
     filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
-
     filtMask = dilationDisk(filtMask, 8);
-
+    
     % Label the connected components in the binary image
     labeled_image = bwlabel(filtMask);
     

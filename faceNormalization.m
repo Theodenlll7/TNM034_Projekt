@@ -64,5 +64,5 @@ function imgNormalized = faceNormalization(img, eye1, eye2)
     imgCropped = scaledImage(cropY(1):cropY(2), cropX(1):cropX(2), :);
 
     % Return the normalized image without resizing
-    imgNormalized = imgCropped;
+    imgNormalized = contrastStretchColor(AWB(colorCorrection(imgCropped),1),0,1);
 end
