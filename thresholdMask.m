@@ -1,4 +1,4 @@
-function mask = faceMask2(imIn)
+function mask = thresholdMask(imIn)
     % threshold mask or color mask
 
     imIn = AWB(imIn,6);

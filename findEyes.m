@@ -3,14 +3,14 @@ function [eye1,eye2] = findEyes(imIn)
     imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1);
 
     % Generate face masks based on different criteria
-    mask1 = faceMask1(imCorrected);
-    mask2 = faceMask2(imCorrected);
-    mask3 = faceMask3(imCorrected);
+    maskSkin = skinMask(imCorrected);
+    maskThreshold = thresholdMask(imCorrected);
+    maskSobel = sobelMask(imCorrected);
     
     % Combine face masks using logical AND and OR operations
-    maskA = mask1 .* mask2;
-    maskC = mask1 .* mask3;
-    maskB = mask2 .* mask3;
+    maskA = maskSkin .* maskThreshold;
+    maskC = maskSkin .* maskSobel;
+    maskB = maskThreshold .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
 
@@ -18,9 +18,9 @@ function [eye1,eye2] = findEyes(imIn)
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
 
     % Mask the eye map to the area where eyes can be
-    faceCorrected = im2double(imIn).*double(mask1);
+    faceCorrected = im2double(imIn).*double(maskSkin);
     faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    map = map .* eyesWindow(faceCorrected);
+    map = map .* windowFromMouthMap(faceCorrected);
 
     
     % Apply the combined face mask to the eye map
