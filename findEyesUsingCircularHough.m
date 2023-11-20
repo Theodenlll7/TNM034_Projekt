@@ -1,4 +1,5 @@
 function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
+    imIn = im2double(imIn);
     try
         [n, m, ~] = size(imIn);
         mask = zeros(n,m);
@@ -23,7 +24,9 @@ function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
         
         eye1 = centers(1,:);
         eye2 = centers(2,:);
+        disp('Could find eyes using Hough :)')
     catch
+        disp('Could NOT find eyes using Hough :(')
         eye1 = centroid1;
         eye2 = centroid2;
     end    

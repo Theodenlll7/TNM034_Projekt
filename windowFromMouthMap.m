@@ -12,6 +12,7 @@ function imOut = windowFromMouthMap(imIn)
     mouthMap = Cr.^2 .* (Cr.^2 - n.*Cr./Cb).^2;
     mouthMap = mouthMap./max(max(mouthMap));
     mouthMap = dilationDisk(mouthMap,12);
+
     mouthMap = max(max(mouthMap)).*0.4 < mouthMap; 
     mouthMap = imfill(mouthMap, 'holes');
     mouthMap = bwareafilt(mouthMap, 1);% Sparar bara det största området
@@ -26,7 +27,24 @@ function imOut = windowFromMouthMap(imIn)
     mask = zeros(n,m);
     
     mask(round((ce(2)-1.1*n/3)):round((ce(2)-1.2*n/9)), round(ce(1)-m/4):round(ce(1)+m/4),1) = 1;
+
+
+    % Perform erodation on the binary image with the disk structuring element
+    SE = strel('square',16);
+    mouthMap = imerode(mouthMap, SE);
+    % imshow(mouthMap); title('mouthMap')
+
+    grayImg = im2double(mouthMap);
+    edgeImg = edge(grayImg, 'canny');
+    [H, theta, rho] = hough(edgeImg);
+    peaks = houghpeaks(H, 10);
+    lines = houghlines(edgeImg, theta, rho, peaks);
     
+    angles = [lines.theta];
+    rotAngle = 90 - angles(1);
+
     % Final Output, a masked version of the input
-    imOut = mask;
+    imOut = imrotate(mask,rotAngle,'bicubic', 'crop');
+        imshow(imOut); title('imOut')
+
 end
