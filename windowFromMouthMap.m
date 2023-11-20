@@ -1,4 +1,4 @@
-function imOut = eyesWindow(imIn)
+function imOut = windowFromMouthMap(imIn)
     % Convert the RGB image to the YCbCr color space
     ycbcr_image = rgb2ycbcr(imIn);
     

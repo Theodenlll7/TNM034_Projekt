@@ -1,4 +1,4 @@
-function mask = faceMask1(imIn)
+function mask = skinMask(imIn)
     
     imIn = im2uint8(imIn);
     imIn = AWB(imIn, 20);

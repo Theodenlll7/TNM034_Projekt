@@ -1,4 +1,4 @@
-function mask = faceMask3(imIn)
+function mask = sobelMask(imIn)
     % Edge mask
 
     imGray = rgb2gray(imIn);
