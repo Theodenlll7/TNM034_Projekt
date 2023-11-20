@@ -34,6 +34,9 @@ function mask = faceMask1(imIn)
     mask = imdilate(mask, SE);
     mask = imclose(mask, SE);
 
+    % Filter image, retaining only the 5 objects with the largest areas.
+    mask = bwareafilt(mask,1);    
+
     mask = imfill(mask, 'holes');
     %imshow(mask); title('mask')
 
