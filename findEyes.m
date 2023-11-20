@@ -1,7 +1,7 @@
 function [eye1,eye2] = findEyes(imIn)
     % Perform color correction and automatic white balance
     imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1);
-    
+
     % Generate face masks based on different criteria
     mask1 = faceMask1(imCorrected);
     mask2 = faceMask2(imCorrected);
@@ -12,18 +12,23 @@ function [eye1,eye2] = findEyes(imIn)
     maskC = mask1 .* mask3;
     maskB = mask2 .* mask3;
     mask = maskA | maskB | maskC;
+    mask = imfill(mask, 'holes');
 
     % Generate an eye map and dilate it
-    map = dilationDisk(eyeMap(colorCorrection(imIn)), 6);
-    
+    map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
+
     % Mask the eye map to the area where eyes can be
-    map = map .* eyesWindow(imCorrected.*mask1);
+    faceCorrected = im2double(imIn).*double(mask1);
+    faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
+    map = map .* eyesWindow(faceCorrected);
+
     
     % Apply the combined face mask to the eye map
     filt = map .* mask;
 
     % Threshold the filtered map to keep only significant regions
     filtMask = max(max(filt)) * 0.8 < filt;
+    filtMask = erodationDisk(filtMask,1);
 
     filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
 

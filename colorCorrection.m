@@ -21,11 +21,12 @@ function imOut = colorCorrection(imIn)
     maxR = max(max(imR));
     maxG = max(max(imG));
     maxB = max(max(imB));
+    maxRGB = max(max(maxR,maxG),maxB);
 
     % Perform color correction by scaling the channels
-    imR = imR * (avgR / maxR);
-    imG = imG * (avgG / maxG);
-    imB = imB * (avgB / maxB);
+    imR = imR * (avgR / maxRGB);
+    imG = imG * (avgG / maxRGB);
+    imB = imB * (avgB / maxRGB);
 
     % Update the output image with the corrected color channels
     imOut(:,:,1) = imR;
