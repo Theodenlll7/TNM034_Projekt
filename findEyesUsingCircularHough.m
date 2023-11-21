@@ -11,7 +11,7 @@ function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
         
         mask(round((eye1m-25)):round((eye1m+25)), round(eye1n-25):round(eye1n+25)) = 1;
         mask(round((eye2m-25)):round((eye2m+25)), round(eye2n-25):round(eye2n+25)) = 1;
-        
+        %imshow(mask.*imIn); title('hough mask')
         
         imMask = imIn .* mask;
         imMask = imMask + ~mask;
@@ -24,9 +24,8 @@ function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
         
         eye1 = centers(1,:);
         eye2 = centers(2,:);
-        disp('Could find eyes using Hough :)')
-    catch
-        disp('Could NOT find eyes using Hough :(')
+    catch exception
+        disp(['Error in findEyesUsingCircularHough: ' exception.message]);
         eye1 = centroid1;
         eye2 = centroid2;
     end    

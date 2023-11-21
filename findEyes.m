@@ -14,14 +14,17 @@ function [eye1,eye2] = findEyes(imIn)
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
 
+    SE = strel('disk',5);
+    mask = imopen(mask, SE);
     % Generate an eye map and dilate it
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
 
     % Mask the eye map to the area where eyes can be
     faceCorrected = im2double(imIn).*double(maskSkin);
+    %imshow(faceCorrected);title('faceCorrected')
     faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
     map = map .* windowFromMouthMap(faceCorrected);
-    imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
+    %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
     filt = map .* mask;
@@ -29,11 +32,10 @@ function [eye1,eye2] = findEyes(imIn)
     % Threshold the filtered map to keep only significant regions
     filtMask = max(max(filt)) * 0.8 < filt;
     filtMask = erodationDisk(filtMask,1);
-
+    %imshow(filt); title('filt')
     filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
 
     filtMask = dilationDisk(filtMask, 8);
-
     % Label the connected components in the binary image
     labeled_image = bwlabel(filtMask);
     

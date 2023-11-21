@@ -5,7 +5,6 @@ function mask = skinMask(imIn)
     imIn = colorCorrection(imIn);
     imIn = AWB(imIn,0);
     imIn = contrastStretchColor(imIn,0,1);
-    
     % Convert the RGB image to YCgCr color space
     ycgcrImage = rgb2ycgcr(imIn);
     

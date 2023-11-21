@@ -18,15 +18,22 @@ function [imYCbCr] = eyeMap(imRGBdouble)
 
     % Apply contrast stretching
     imYCbCr = ((imYCbCr - minVal) * ((maxVal - minVal) / (maxVal - minVal)) + minVal);
+    
+    imYCbCr = dilationDisk(imYCbCr, 6);
+    imYCbCr = dilationDisk(imYCbCr, 8);
+    imYCbCr = dilationDisk(imYCbCr, 10);
 
-
-    %imYCbCr = lowpassSobel(imYCbCr);
+    
+    imshow(imYCbCr); title('imYCbCr')
 end
 
 % Function to calculate the chromaticity-based eye map
 function [eyeMapC] = eyeMapC(Cb, Cr)
     % Calculate the chromaticity-based eye map using Cb and Cr channels
     eyeMapC = 1/3 * (Cb.^2 + (1 - Cr.^2) + Cb./Cr);
+
+    % Improves the contrast of the map (not necessary for L)
+    eyeMapC = histeq(eyeMapC);
 
     % Normalize the map to the range [0, 1]
     eyeMapC = eyeMapC./max(max(eyeMapC));
