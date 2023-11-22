@@ -1,5 +1,7 @@
 function [imYCbCr] = eyeMap(imRGBdouble)
-    % Summurazation: Function to calculate the eye map from an RGB image
+    % Summarization: Function to calculate the eye map from an RGB image
+    
+    % Convert RGB to YCbCr color space
     imYCbCr = rgb2ycbcr(imRGBdouble);
 
     % Extract the Y, Cb, and Cr channels as double-precision values
@@ -8,9 +10,8 @@ function [imYCbCr] = eyeMap(imRGBdouble)
     Cr = im2double(imYCbCr(:, :, 3));
 
     % Calculate the eye map by multiplying C-based and L-based eye maps
-    % Se: "Face Detection in Color Images"
+    % Reference: "Face Detection in Color Images"
     imYCbCr = eyeMapL(Y) .* eyeMapC(Cb, Cr);
-
 
     % Find the current minimum and maximum values in eyeMapL
     minVal = min(min(imYCbCr));
@@ -19,12 +20,12 @@ function [imYCbCr] = eyeMap(imRGBdouble)
     % Apply contrast stretching
     imYCbCr = ((imYCbCr - minVal) * ((maxVal - minVal) / (maxVal - minVal)) + minVal);
     
+    % Apply morphological dilation with different disk sizes
     imYCbCr = dilationDisk(imYCbCr, 6);
-    imYCbCr = dilationDisk(imYCbCr, 8);
-    imYCbCr = dilationDisk(imYCbCr, 10);
+    %imYCbCr = dilationDisk(imYCbCr, 8);
+    %imYCbCr = dilationDisk(imYCbCr, 10);
 
-    
-    imshow(imYCbCr); title('imYCbCr')
+    %imshow(imYCbCr); title('imYCbCr')
 end
 
 % Function to calculate the chromaticity-based eye map

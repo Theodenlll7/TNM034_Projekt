@@ -41,6 +41,7 @@ function mask = skinMask(imIn)
     SE = strel('disk', 350);
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
+    mask = imfill(mask, 'holes');
 
     %imshow(mask); title('mask')
 

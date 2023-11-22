@@ -3,7 +3,7 @@ function im = drawX(im, n, m)
     m = round(m);
     n = round(n);
     % Horizontal line
-    im(m-3:m+3, round(n - 15):round(n + 15)) = 0;
+    im(m-3:m+3, round(n - 15):round(n + 15),1:2) = 0;
     % Vertical line
-    im(round(m - 15):round(m + 15), n-3:n+3) = 0;
+    im(round(m - 15):round(m + 15), n-3:n+3,1:2) = 0;
 end

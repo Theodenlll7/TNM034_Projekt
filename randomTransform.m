@@ -15,7 +15,7 @@ angle = randi(rotationRange);
 rotatedImage = imrotate(translatedImage, angle, 'bicubic', 'loose');
 
 % Apply random scaling
-scaleFactor = scaleRange(1) + rand*(scaleRange(2)-scaleRange(1))
+scaleFactor = scaleRange(1) + rand*(scaleRange(2)-scaleRange(1));
 scaledImage = imresize(rotatedImage, scaleFactor,"bicubic");
 
 transformedImage = scaledImage;

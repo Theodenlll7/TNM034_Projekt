@@ -65,4 +65,8 @@ function imgNormalized = faceNormalization(img, eye1, eye2)
 
     % Return the normalized image without resizing
     imgNormalized = contrastStretchColor(AWB(colorCorrection(imgCropped),1),0,1);
+
+    %% Color
+    imgNormalized = rgb2gray(imgNormalized);
+    imgNormalized = histeq(imgNormalized);
 end

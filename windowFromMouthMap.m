@@ -10,7 +10,7 @@ function imOut = windowFromMouthMap(imIn)
     % Mouth Detection
     n = 0.95 * mean(mean(Cr.^2)) / mean(mean(Cr./Cb));
     mouthMap = Cr.^2 .* (Cr.^2 - n.*Cr./Cb).^2;
-    mouthMap = mouthMap./max(max(mouthMap));
+    mouthMap = (mouthMap./max(max(mouthMap))); % histeq
     mouthMap = dilationDisk(mouthMap,12);
 
     noiseSE = strel('disk',2);
@@ -20,14 +20,14 @@ function imOut = windowFromMouthMap(imIn)
     mouthMap = imopen(mouthMap, noiseSE); % From lab4 (Boben)
     mouthMap = imopen(mouthMap, vertLineSE);
     mouthMap = imclose(mouthMap, blobsSE);
-    
+    %imshow(mouthMap); title('mouthMap1')
 
-
-    mouthMap = max(max(mouthMap)).*0.4 < mouthMap; 
+    mouthMap = max(max(mouthMap)).*0.8 < mouthMap; 
+    %imshow(mouthMap); title('mouthMap2')
 
     mouthMap = imfill(mouthMap, 'holes');
     mouthMap = bwareafilt(mouthMap, 1);% Sparar bara det största området
-    %imshow(mouthMap); title('mouthMap')
+    %imshow(mouthMap); title('mouthMap3')
 
 
     % Mouth eegion extraction
@@ -40,6 +40,7 @@ function imOut = windowFromMouthMap(imIn)
     mask = zeros(n,m);
     
     mask(round((ce(2)-1.0*n/3)):round((ce(2)-0.2*n/3)), round(ce(1)-m/4):round(ce(1)+m/4),1) = 1;
+    imshow(mask); title('mask')
 
     try
     % Perform erodation on the binary image with the disk structuring element
@@ -57,13 +58,12 @@ function imOut = windowFromMouthMap(imIn)
     rotAngle = 90 - angles(1);
 
     % Final Output, a masked version of the input
-    
-    imOut = imrotate(mask,rotAngle,'bicubic', 'crop');
+    imOut = mask;
+    %imOut = imrotate(mask,rotAngle,'bicubic', 'crop');
     catch exception
-        disp(['Error in windowFromMouthMap: ' exception.message]);
+        %disp(['Error in angle transform (windowFromMouthMap): ' exception.message]);
         imOut = mask;
     end    
         %imshow(imOut.*imIn); title('imOut mouthMap')
-        %imshow(imIn.*mouthMap); title('mouthMap')
-
+        %imshow(imIn.*mouthMap); title('mouth')
 end
