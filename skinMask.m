@@ -40,9 +40,12 @@ function mask = skinMask(imIn)
 
     % Filter image, retaining only the 5 objects with the largest areas.
     mask = bwareafilt(mask,1);
-    SE = strel('disk', 20);
+    SE = strel('disk', 50);
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
+    SE = strel('disk', 10);
+    mask = imdilate(mask, SE);
+
 
     %imshow(mask); title('mask')
 

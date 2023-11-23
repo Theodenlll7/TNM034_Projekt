@@ -33,11 +33,11 @@ function [eye1,eye2] = findEyes(imIn)
     faceCorrected = im2double(imIn).*double(maskSkin);
     %imshow(faceCorrected);title('faceCorrected')
     faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    map = map .* windowFromMouthMap(faceCorrected);
+    map = map.*windowFromMouthMap(faceCorrected);
     %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
-    filt = map .* mask;
+    filt = map; %.* mask;
     %imshow(filt); title('filt')
 
     % Threshold the filtered map to keep only significant regions

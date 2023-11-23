@@ -40,6 +40,13 @@ function imOut = windowFromMouthMap(imIn)
     [n, m, ~] = size(imIn);
     mask = zeros(n,m);
     
+    if n > 650
+    n = n/2;
+    end
+    if m > 500
+        m = m/2;
+    end   
+
     mask(round((ce(2)-1.0*n/3)):round((ce(2)-0.2*n/3)), round(ce(1)-m/4):round(ce(1)+m/4),1) = 1;
     %imshow(mask); title('mask')
 
