@@ -22,13 +22,14 @@ function imOut = windowFromMouthMap(imIn)
     mouthMap = imclose(mouthMap, blobsSE);
     %imshow(mouthMap); title('mouthMap1')
 
+    
     mouthMap = max(max(mouthMap)).*0.8 < mouthMap; 
     %imshow(mouthMap); title('mouthMap2')
 
     mouthMap = imfill(mouthMap, 'holes');
     mouthMap = bwareafilt(mouthMap, 1);% Sparar bara det största området
     %imshow(mouthMap); title('mouthMap3')
-
+    
 
     % Mouth eegion extraction
     labeled_image = bwlabel(mouthMap);
@@ -40,7 +41,7 @@ function imOut = windowFromMouthMap(imIn)
     mask = zeros(n,m);
     
     mask(round((ce(2)-1.0*n/3)):round((ce(2)-0.2*n/3)), round(ce(1)-m/4):round(ce(1)+m/4),1) = 1;
-    imshow(mask); title('mask')
+    %imshow(mask); title('mask')
 
     try
     % Perform erodation on the binary image with the disk structuring element

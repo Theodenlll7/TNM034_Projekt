@@ -18,7 +18,7 @@ function [eye1,eye2] = findEyes(imIn)
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
-    imshow(maskSkin);title('maskA')
+    %imshow(maskSkin);title('maskSkin')
 
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    

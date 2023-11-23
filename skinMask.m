@@ -1,10 +1,12 @@
 function mask = skinMask(imIn)
     
+    imIn = adjustRGB(imIn);
     imIn = im2uint8(imIn);
-    imIn = AWB(imIn, 20);
-    imIn = colorCorrection(imIn);
-    imIn = AWB(imIn,0);
+    imIn = AWB(imIn, 2);
+    %imIn = colorCorrection(imIn);
+    imIn = im2double(imIn);
     imIn = contrastStretchColor(imIn,0,1);
+    
     % Convert the RGB image to YCgCr color space
     ycgcrImage = rgb2ycgcr(imIn);
     
@@ -38,7 +40,7 @@ function mask = skinMask(imIn)
 
     % Filter image, retaining only the 5 objects with the largest areas.
     mask = bwareafilt(mask,1);
-    SE = strel('disk', 350);
+    SE = strel('disk', 20);
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
 
