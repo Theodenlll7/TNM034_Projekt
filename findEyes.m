@@ -18,26 +18,28 @@ function [eye1,eye2] = findEyes(imIn)
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
-    %imshow(maskSkin);title('maskSkin')
+    mask = violaJones(double(mask).*imIn);
+    imshow(mask);title('maskSkin')
 
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
     %imshow(im2double(maskSkin).*im2double(imIn));title('mask')
+    %imshow(mask)
 
     % Generate an eye map and dilate it
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
 
     % Mask the eye map to the area where eyes can be
-    faceCorrected = im2double(imIn).*double(maskSkin);
+    %faceCorrected = im2double(imIn).*double(maskSkin);
     %imshow(faceCorrected);title('faceCorrected')
-    faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    map = map.*windowFromMouthMap(faceCorrected);
+    %faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
+    %map = map.*windowFromMouthMap(faceCorrected);
     %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
-    filt = map; %.* mask;
+    filt = map.* mask;
     %imshow(filt); title('filt')
 
     % Threshold the filtered map to keep only significant regions
