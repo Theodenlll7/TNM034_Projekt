@@ -5,7 +5,7 @@ function mask = violaJones(imIn)
     n2 = bbox(1)+bbox(3);   % x + w
     m1 = bbox(2);           % y
     m2 = bbox(2)+bbox(4);   % y + h
-    
+
     [n,m,~] = size(imIn);
     mask = zeros(n,m);
     mask(m1:m2, n1:n2) = 1;

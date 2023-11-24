@@ -14,12 +14,14 @@ function [eye1,eye2] = findEyes(imIn)
     
     % Combine face masks using logical AND and OR operations
     maskA = maskSkin; %.* maskThreshold;
+    imshow(maskA); title('SkinMask')
     maskB = maskThreshold .* maskSobel;
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
+    imshow(double(mask).*imIn); title('violaJones input')
     mask = violaJones(double(mask).*imIn);
-    imshow(mask);title('maskSkin')
+    %imshow(double(mask).*imIn);title('mask')
 
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    
@@ -44,7 +46,7 @@ function [eye1,eye2] = findEyes(imIn)
     %imshow(filt); title('filt')
 
     % Threshold the filtered map to keep only significant regions
-    filtMask = max(max(filt)) * 0.85 < filt; % was 0.7 before 2023-11-22
+    filtMask = max(max(filt)) * 0.82 < filt; % was 0.7 before 2023-11-22
     filtMask = erodationDisk(filtMask,1);
     %imshow(filtMask); title('filtMask')
     filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
