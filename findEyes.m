@@ -6,7 +6,7 @@ function [eye1,eye2] = findEyes(imIn)
     %imshow(imCorrected);title('imCorrected')
 
     % Generate face masks based on different criteria
-    maskSkin = skinMask(imCorrected);
+    maskSkin = skinMask2(imCorrected);
     maskThreshold = thresholdMask(imCorrected);
     maskSobel = sobelMask(imCorrected);
     SE = strel('disk', 4);
@@ -35,7 +35,8 @@ function [eye1,eye2] = findEyes(imIn)
     %faceCorrected = im2double(imIn).*double(maskSkin);
     %imshow(faceCorrected);title('faceCorrected')
     %faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    %map = map.*windowFromMouthMap(faceCorrected);
+    %map = map.*windowFromMouthMap(faceCorrected); %used for DB1 and woorks
+    %but DB2 needs the more soficticated viola-jones alg for the window
     %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
