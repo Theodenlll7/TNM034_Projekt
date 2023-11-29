@@ -14,13 +14,13 @@ function [eye1,eye2] = findEyes(imIn)
     
     % Combine face masks using logical AND and OR operations
     maskA = maskSkin; %.* maskThreshold;
-    imshow(maskA); title('SkinMask')
+    %imshow(maskA); title('SkinMask')
     maskB = maskThreshold .* maskSobel;
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
-    imshow(double(mask).*imIn); title('violaJones input')
-    mask = violaJones(double(mask).*imIn);
+    %imshow(double(mask).*imIn); title('violaJones input')
+    mask = violaJones(double(mask), imIn);
     %imshow(double(mask).*imIn);title('mask')
 
     SE = strel('disk', 10);
