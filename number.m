@@ -1,7 +1,4 @@
-function number = number(im)
-% Example image name
-imageName = im;
-
+function number = number(imageName)
 % Define a regular expression pattern to match a digit after an underscore
 pattern = '_\d+';
 
