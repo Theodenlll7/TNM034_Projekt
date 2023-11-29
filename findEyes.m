@@ -6,7 +6,7 @@ function [eye1,eye2] = findEyes(imIn)
     %imshow(imCorrected);title('imCorrected')
 
     % Generate face masks based on different criteria
-    maskSkin = skinMask(imCorrected);
+    maskSkin = skinMask2(imCorrected);
     maskThreshold = thresholdMask(imCorrected);
     maskSobel = sobelMask(imCorrected);
     SE = strel('disk', 4);
@@ -14,34 +14,39 @@ function [eye1,eye2] = findEyes(imIn)
     
     % Combine face masks using logical AND and OR operations
     maskA = maskSkin; %.* maskThreshold;
+    imshow(maskA); title('SkinMask')
     maskB = maskThreshold .* maskSobel;
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
-    %imshow(maskSkin);title('maskSkin')
+    imshow(double(mask).*imIn); title('violaJones input')
+    mask = violaJones(double(mask).*imIn);
+    %imshow(double(mask).*imIn);title('mask')
 
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
     %imshow(im2double(maskSkin).*im2double(imIn));title('mask')
+    %imshow(mask)
 
     % Generate an eye map and dilate it
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
 
     % Mask the eye map to the area where eyes can be
-    faceCorrected = im2double(imIn).*double(maskSkin);
+    %faceCorrected = im2double(imIn).*double(maskSkin);
     %imshow(faceCorrected);title('faceCorrected')
-    faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    map = map.*windowFromMouthMap(faceCorrected);
+    %faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
+    %map = map.*windowFromMouthMap(faceCorrected); %used for DB1 and woorks
+    %but DB2 needs the more soficticated viola-jones alg for the window
     %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
-    filt = map; %.* mask;
+    filt = map.* mask;
     %imshow(filt); title('filt')
 
     % Threshold the filtered map to keep only significant regions
-    filtMask = max(max(filt)) * 0.85 < filt; % was 0.7 before 2023-11-22
+    filtMask = max(max(filt)) * 0.82 < filt; % was 0.7 before 2023-11-22
     filtMask = erodationDisk(filtMask,1);
     %imshow(filtMask); title('filtMask')
     filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions

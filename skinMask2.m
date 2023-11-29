@@ -108,7 +108,30 @@ SE = strel('rectangle', [100 260]);
 mask = imclose(mask, SE);
 SE = strel('rectangle', [100 5]);
 mask = imclose(mask, SE);
-SE = strel('rectangle', [250 1]);
+SE = strel('rectangle', [220 1]);
 mask = imopen(mask, SE);
+SE = strel('disk',10);
+mask = imdilate(mask,SE);
 mask = keepNLargestObjects(mask, 1);
+end
+
+function ycgcrImage = rgb2ycgcr(rgbImage)
+    % Define the conversion matrix for RGB to YCgCr
+    conversionMatrix = [0.299 0.587 0.114; -0.1687367 -0.331264 0.5; 0.5 -0.418688 -0.081312];
+    
+    % Convert the RGB image to YCgCr
+    [rows, cols, ~] = size(rgbImage);
+    ycgcrImage = zeros(rows, cols, 3);
+    
+    for i = 1:rows
+        for j = 1:cols
+            pixel = double(reshape(rgbImage(i, j, :), 3, 1));
+            ycgcrPixel = conversionMatrix * pixel;
+            ycgcrImage(i, j, :) = ycgcrPixel;
+        end
+    end
+
+    % Normalize the YCgCr channels
+    ycgcrImage(:, :, 2) = ycgcrImage(:, :, 2) + 0.5;
+    ycgcrImage = min(max(ycgcrImage, 0), 1);
 end
