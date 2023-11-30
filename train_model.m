@@ -30,15 +30,16 @@ for i = 1:numImages
 end
 
 
-mean_face = mean(X);
+mean_face = mean(X, 2)
 
 A = X - mean_face;
 
-%C = A*A';
 V = A'*A;
 
-% Maby wrong might need to compute evey u seperatly
+E = eig(V);
+
 U = A*V;
+
 
 %[width, ~] = size(faceData{1});
 %figure;
