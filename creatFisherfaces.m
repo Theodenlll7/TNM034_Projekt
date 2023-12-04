@@ -1,4 +1,5 @@
 function creatFisherfaces()
+    disp('Creating fisher model')
     % Load and preprocess face data, see function below
     [faceData, classIds, numImages] = prepData;
     
@@ -96,6 +97,7 @@ function creatFisherfaces()
     
     % Save the trained Fisherface model
     save("trained_fisher_model", 'meanFaceGlobal', 'W', 'F', 'classIds');
+    disp("Succsesfully created fisher face model")
 end
 
 

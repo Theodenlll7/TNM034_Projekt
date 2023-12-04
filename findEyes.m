@@ -2,7 +2,7 @@ function [eye1,eye2] = findEyes(imIn)
     % Perform color correction and automatic white balance
     imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1);
     %imCorrected = cat(3, 1.015*imCorrected(:,:,1), imCorrected(:,:,2), imCorrected(:,:,3));
-
+    imCorrected(:,:,1)
     %imshow(imCorrected);title('imCorrected')
 
     % Generate face masks based on different criteria
@@ -26,12 +26,12 @@ function [eye1,eye2] = findEyes(imIn)
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    
     mask = imclose(mask, SE);
-    mask = imfill(mask, 'holes');
+    mask = imfill(mask, 'holes')
     %imshow(im2double(maskSkin).*im2double(imIn));title('mask')
     %imshow(mask)
 
     % Generate an eye map and dilate it
-    map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
+    map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6)
 
     % Mask the eye map to the area where eyes can be
     %faceCorrected = im2double(imIn).*double(maskSkin);

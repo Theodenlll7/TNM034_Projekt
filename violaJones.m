@@ -12,7 +12,7 @@ function mask = violaJones(maskIn, imIn)
         mask = zeros(n,m);
         mask(m1:m2, n1:n2) = 1;
     catch
-        disp(':((((((')
+        % disp(':((((((')
         % If all hope fails...
         mask = maskIn;
     end
