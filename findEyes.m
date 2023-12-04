@@ -1,6 +1,6 @@
 function [eye1,eye2] = findEyes(imIn)
     % Perform color correction and automatic white balance
-    imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1);
+    imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1)
     %imCorrected = cat(3, 1.015*imCorrected(:,:,1), imCorrected(:,:,2), imCorrected(:,:,3));
 
     %imshow(imCorrected);title('imCorrected')
