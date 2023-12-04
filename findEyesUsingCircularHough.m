@@ -31,7 +31,7 @@ function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
         eye1 = centers(1,:)/scaleFac;
         eye2 = centers(2,:)/scaleFac;
     catch exception
-        disp(['Error in findEyesUsingCircularHough: ' exception.message]);
+        %disp(['Error in findEyesUsingCircularHough: ' exception.message]);
         eye1 = centroid1/scaleFac;
         eye2 = centroid2/scaleFac;
         %imshow(imIn); title('Mask around centroids')
