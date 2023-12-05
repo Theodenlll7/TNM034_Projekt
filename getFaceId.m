@@ -3,8 +3,8 @@ function [out_id] = getFaceId(image, threshhold)
     %load('matlab.mat', 'correctIds')
 
     x = image(:);
-    x = x(:);
-    face = double(x) - meanFaceGlobal;
+    pixels = numel(meanFaceGlobal)
+    face = double(x(1:pixels)) - meanFaceGlobal;
     
     thisW = F' * face;
     
