@@ -2,7 +2,7 @@ function [eye1,eye2] = findEyes(imIn)
     % Perform color correction and automatic white balance
     imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),1),0,1);
     %imCorrected = cat(3, 1.015*imCorrected(:,:,1), imCorrected(:,:,2), imCorrected(:,:,3));
-    %size(imCorrected(:,:,1))
+
     %imshow(imCorrected);title('imCorrected')
 
     % Generate face masks based on different criteria
@@ -19,7 +19,6 @@ function [eye1,eye2] = findEyes(imIn)
     maskC = maskSkin .* maskSobel;
     mask = maskA | maskB | maskC;
     mask = imfill(mask, 'holes');
-    %size(mask)
     %imshow(double(mask).*imIn); title('violaJones input')
     mask = violaJones(double(mask), imIn);
     %imshow(double(mask).*imIn);title('mask')
@@ -33,7 +32,6 @@ function [eye1,eye2] = findEyes(imIn)
 
     % Generate an eye map and dilate it
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
-    %size(map)
 
     % Mask the eye map to the area where eyes can be
     %faceCorrected = im2double(imIn).*double(maskSkin);
@@ -47,31 +45,23 @@ function [eye1,eye2] = findEyes(imIn)
     filt = map.* mask;
     %imshow(filt); title('filt')
 
-    centroidsAre2 = false;
-    val = 0.0;
-    while ~centroidsAre2
-        try
-        % Threshold the filtered map to keep only significant regions
-        filtMask = max(max(filt)) * (0.8 - val) < filt; 
-        filtMask = erodationDisk(filtMask,1);
-        %imshow(filtMask); title('filtMask')
-        filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
+    % Threshold the filtered map to keep only significant regions
+    filtMask = max(max(filt)) * 0.82 < filt; % was 0.7 before 2023-11-22
+    filtMask = erodationDisk(filtMask,1);
+    %imshow(filtMask); title('filtMask')
+    filtMask = bwareafilt(filtMask, 2); % Keep only the two largest white regions
+
+    filtMask = dilationDisk(filtMask, 8);
+    % Label the connected components in the binary image
+    labeled_image = bwlabel(filtMask);
     
-        filtMask = dilationDisk(filtMask, 8);
-        % Label the connected components in the binary image
-        labeled_image = bwlabel(filtMask);
-        % imshow(filtMask); title('filtMask')
-        % Calculate the region properties, including the centroids, of the labeled components
-        stats = regionprops(logical(labeled_image), 'Centroid');
-        
-        % Extract the centroids of the circles
-        centroid1 = stats(1).Centroid;
-        centroid2 = stats(2).Centroid;
-        centroidsAre2 = true;
-        catch
-            val = val + 0.1;
-        end    
-    end
+    % Calculate the region properties, including the centroids, of the labeled components
+    stats = regionprops(logical(labeled_image), 'Centroid');
+    
+    % Extract the centroids of the circles
+    centroid1 = stats(1).Centroid;
+    centroid2 = stats(2).Centroid;
+    
     % Call a separate function to refine eye positions using circular Hough transform
     [eye1, eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2);
 end
