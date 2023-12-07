@@ -1,4 +1,6 @@
 function imgNormalized = faceNormalization(img, eye1, eye2)
+
+    %img = AWB(img, 0.05);
     %% Translation
     % Specify the desired center coordinates
     desiredCenter =  [(eye1(1) + eye2(1)) / 2, (eye1(2) + eye2(2)) / 2];
@@ -71,8 +73,8 @@ cropWidth = 50 + 120 / 2;
 cropHeightAbove = 100;
 cropHeightBelow = 150;
 
-cropX = round([eye_center(1) - cropWidth, eye_center(1) + cropWidth]);
-cropY = round([eye_center(2) - cropHeightAbove, eye_center(2) + cropHeightBelow]);
+cropX = round([round(eye_center(1)) - cropWidth, round(eye_center(1)) + cropWidth]);
+cropY = round([round(eye_center(2)) - cropHeightAbove, round(eye_center(2)) + cropHeightBelow]);
 
 % Get image dimensions
 imgHeight = size(scaledImage, 1);
