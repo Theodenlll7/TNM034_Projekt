@@ -2,7 +2,6 @@ function [out_id] = getFaceId(image, threshhold)
     load("trained_fisher_model.mat", 'meanFaceGlobal', 'W', 'F', 'classIds');
 
     x = image(:);
-    imshow(reshape(meanFaceGlobal, 251, 221))
 
     
     pixels = numel(meanFaceGlobal);
@@ -22,8 +21,10 @@ function [out_id] = getFaceId(image, threshhold)
      % fprintf('\nmin dist: %.3f', min(distances));
      % fprintf('\nClosest id: %i; %i', classIds(closesEigenface));
 
-    if(distance < threshhold), out_id = classIds(closesEigenface);
-    else, out_id = 0;
+    if(distance < threshhold)
+        out_id = classIds(closesEigenface);
+    else
+        out_id = 0;
     end
 end
 
