@@ -17,23 +17,18 @@ function [eye1,eye2] = findEyesUsingCircularHough(imIn, centroid1, centroid2)
     try
         mask(round(max(eye1m-scaleFac*25,0)):round((eye1m+scaleFac*25)), round(max(eye1n-scaleFac*25,0)):round(eye1n+scaleFac*25)) = 1;
         mask(round(max(eye2m-scaleFac*25,1)):round((eye2m+scaleFac*25)), round(max(eye2n-scaleFac*25,0)):round(eye2n+scaleFac*25)) = 1;
-        %imshow(mask.*imIn); title('hough mask')
     
         imMask = imIn .* mask;
         imMask = imMask + ~mask;
-        %imshow(imMask); title('Mask around centroids')
         
         [centers, radii, ~] = imfindcircles(imMask,[8 300],'ObjectPolarity','dark');
         centersStrong2 = centers(1:2,:); 
         radiiStrong2 = radii(1:2);
-        %viscircles(centersStrong2, radiiStrong2,'EdgeColor','b');
           
         eye1 = centers(1,:)/scaleFac;
         eye2 = centers(2,:)/scaleFac;
     catch exception
-        %disp(['Error in findEyesUsingCircularHough: ' exception.message]);
         eye1 = centroid1/scaleFac;
         eye2 = centroid2/scaleFac;
-        %imshow(imIn); title('Mask around centroids')
     end    
 end

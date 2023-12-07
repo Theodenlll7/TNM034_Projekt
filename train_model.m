@@ -30,7 +30,7 @@ for i = 1:numImages
 end
 
 
-mean_face = mean(X, 2)
+mean_face = mean(X, 2);
 
 A = X - mean_face;
 
@@ -39,16 +39,6 @@ V = A'*A;
 E = eig(V);
 
 U = A*V;
-
-
-%[width, ~] = size(faceData{1});
-%figure;
-%for i = 1:16
-%    eigenface = reshape(u(:,i), width, []);
-%    subplot(4, 4, i);
-%    imshow(eigenface, []);
-%    title(['Eigenface ', num2str(i)]);
-%end
 
 W = U'*A;
 

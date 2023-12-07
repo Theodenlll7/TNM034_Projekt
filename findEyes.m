@@ -1,10 +1,6 @@
 function [eye1,eye2] = findEyes(imIn)
-    % Perform color correction and automatic white balance
     imCorrected = contrastStretchColor(AWB(colorCorrection(imIn),0.5),0,1);
-    %imCorrected = cat(3, 1.015*imCorrected(:,:,1), imCorrected(:,:,2), imCorrected(:,:,3));
-    %size(imCorrected(:,:,1))
-    %imshow(imCorrected);title('imCorrected')
-
+   
     % Generate face masks based on different criteria
     maskSkin = skinMask2(imCorrected);
     maskThreshold = thresholdMask(imCorrected);
@@ -13,39 +9,23 @@ function [eye1,eye2] = findEyes(imIn)
     maskSobel = imclose(maskSobel, SE);
     
     % Combine face masks using logical AND and OR operations
-    maskA = maskSkin; %.* maskThreshold;
-    %imshow(maskA); title('SkinMask')
     maskB = maskThreshold .* maskSobel;
     maskC = maskSkin .* maskSobel;
-    mask = maskA | maskB | maskC;
+    mask = maskSkin | maskB | maskC;
     mask = imfill(mask, 'holes');
-    %size(mask)
-    %imshow(double(mask).*imIn); title('violaJones input')
+
     mask = violaJones(double(mask), imIn);
-    %imshow(double(mask).*imIn);title('mask')
 
     SE = strel('disk', 10);
     mask = imclose(mask, SE);    
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
-    %imshow(im2double(maskSkin).*im2double(imIn));title('mask')
-    %imshow(mask)
 
     % Generate an eye map and dilate it
     map = dilationDisk(eyeMap(colorCorrection(imCorrected)), 6);
-    %size(map)
-
-    % Mask the eye map to the area where eyes can be
-    %faceCorrected = im2double(imIn).*double(maskSkin);
-    %imshow(faceCorrected);title('faceCorrected')
-    %faceCorrected = contrastStretchColor(AWB(colorCorrection(faceCorrected),1),0,1);
-    %map = map.*windowFromMouthMap(faceCorrected); %used for DB1 and woorks
-    %but DB2 needs the more soficticated viola-jones alg for the window
-    %imshow(im2double(imIn).*windowFromMouthMap(faceCorrected)); title('window');
     
     % Apply the combined face mask to the eye map
     filt = map.* mask;
-    %imshow(filt); title('filt')
 
     centroidsAre2 = false;
     val = 0.0;

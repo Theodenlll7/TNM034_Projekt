@@ -54,7 +54,6 @@ cbmask = imfill(cbmask, 'holes');
 SE = strel('disk', 10);
 cbmask = imdilate(cbmask, SE);
 
-
 crmask = (Crmin <= Cr & Cr <= Crmax);
 SE = strel('disk', 2);
 crmask = imclose(crmask, SE);
@@ -69,12 +68,7 @@ crmask = imopen(crmask, SE);
 crmask = imfill(crmask, 'holes');
 crmask = keepNLargestObjects(crmask, 3);
 
-%SE = strel('disk', 40);
-%crmask = imopen(crmask, SE);
-%imshow(crmask); title('crmask')
-
 cgmask = (Cgmin <= Cg & Cg <= Cgmax);
-%imshow(cgmask); title('cgmask')
 
 ymask = (Ymin <= Y & Y <= Ymax);
 SE = strel('disk', 24);
@@ -87,7 +81,7 @@ SE = strel('disk', 6);
 hmask = imerode(hmask, SE);
 hmask = imclose(hmask, SE);
 
-SE = strel('disk', 19);% was 8 before 2023-11-22
+SE = strel('disk', 19);
 hmask = imdilate(hmask, SE);
 hmask = imclose(hmask, SE);
 
@@ -101,7 +95,7 @@ SE = strel('disk', 10);
 hmask = imdilate(hmask, SE);
 
 mask = crmask & cbmask & hmask & ymask;
-%imshow(mask); title("mask")
+
 % Create binary masks for skin regions
 mask = keepNLargestObjects(mask, 2);
 SE = strel('rectangle', [100 260]);

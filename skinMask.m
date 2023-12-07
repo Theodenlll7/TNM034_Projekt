@@ -3,7 +3,6 @@ function mask = skinMask(imIn)
     imIn = adjustRGB(imIn);
     imIn = im2uint8(imIn);
     imIn = AWB(imIn, 2);
-    %imIn = colorCorrection(imIn);
     imIn = im2double(imIn);
     imIn = contrastStretchColor(imIn,0,1);
     
@@ -45,9 +44,6 @@ function mask = skinMask(imIn)
     mask = imfill(mask, 'holes');
     SE = strel('disk', 8);
     mask = imdilate(mask, SE);
-
-
-    %imshow(mask); title('mask')
 
 end
 

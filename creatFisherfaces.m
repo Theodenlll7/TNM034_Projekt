@@ -16,9 +16,8 @@ function creatFisherfaces()
     
     % Flatten each image into a vector
     faceVectors = cellfun(@(x) x(:), faceData, 'UniformOutput', false);
-    
-    % Combine faceVectors to form X (each row represents an image)
-    numPixels = numel(faceVectors{1}); % Number of pixels in each image
+    % Number of pixels in each image
+    numPixels = numel(faceVectors{1}); 
     
     % Calculate mean face for each class
     classmeanFaces = zeros(numPixels, numClasses);
@@ -26,16 +25,15 @@ function creatFisherfaces()
         classmeanFaces(:, classIds(i)) = classmeanFaces(:, classIds(i)) + faceVectors{i};
     end
     
-    % Normalize by the count of occurrences for each class
+    % Normalize by the occurrences of each class
     for i = 1:numClasses
         classmeanFaces(:, i) = classmeanFaces(:, i) / classCounts(i);
     end
     
-    % Calculate global mean face
     meanFaceGlobal = mean(classmeanFaces, 2);
     
-    % PCA
-    % X all imsges where every colum is an image
+    %% PCA
+    % Combine faceVectors to form X (each row represents an image)
     X = zeros(numPixels, numImages);
     for i = 1:numImages
         X(:, i) = faceVectors{i}';
@@ -60,6 +58,8 @@ function creatFisherfaces()
     for i = 1:numClasses
         pMeanClassFace(:, i) = W_pca' * classmeanFaces(:, i);
     end
+
+    %%
     
     % Calculate Between-class Scatter Matrix (S_b)
     S_b = zeros(numImages - numClasses);
@@ -81,7 +81,7 @@ function creatFisherfaces()
         end
     end
     
-    % Compute Fisherfaces (FLD)
+    %% Compute Fisherfaces (FLD)
     [W_fld, eigenValues] = eig(S_b, S_w);
     [~, order] = sort(diag(eigenValues), 'descend');
     W_fld = W_fld(:, order);
@@ -111,24 +111,22 @@ function [faceData, classIds, numImages] = prepData()
     
     numImages = numel(allImages);
     
-    % Read images into a cell array
     faceData = cell(1, numImages);
     classIds = zeros(1, numImages);
-    validImages = 0;  % Counter for valid images without 'db0' in the filename
+    validImages = 0;  % Counter for valid images
     
     for i = 1:numImages
         % Check if the filename contains 'db0'
         if isempty(strfind(allImages(i).name, 'db0'))
-            % Load your image
             img = im2double(imread(fullfile(allImages(i).folder, allImages(i).name)));
             [eye1, eye2] = findEyes(img);
             faceData{validImages + 1} = faceNormalization(img, eye1, eye2);
             classIds(validImages + 1) = number(allImages(i).name);
             validImages = validImages + 1;
+
         end
     end
     
-    % Trim faceData and classIds to remove unused elements
     faceData = faceData(1:validImages);
     classIds = classIds(1:validImages);
     numImages = validImages;

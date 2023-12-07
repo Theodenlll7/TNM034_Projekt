@@ -9,16 +9,12 @@ function id = tnm034(im)
 % and ‘0’ for all other faces.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
     im = im2double(im);
-    [eye1,eye2] = findEyes(im);
-    %imshow(showEyes(im, eye1, eye2))
-    
-    %try
+    [eye1,eye2] = findEyes(im);    
+    try
         normalized_img = faceNormalization(im,eye1,eye2);
-        %imshow(normalized_img)
         id = getFaceId(normalized_img, 6900); % A normal dist between two difrent images is < 0.9*10^6 (PCA)
-    % catch E
-    %     disp(E)
-    %     id = -1;
-    % end    
+    catch
+         id = -1;
+    end    
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 end
