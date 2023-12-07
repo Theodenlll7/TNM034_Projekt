@@ -2,7 +2,10 @@ function [out_id] = getFaceId(image, threshhold)
     load("trained_fisher_model.mat", 'meanFaceGlobal', 'W', 'F', 'classIds');
 
     x = image(:);
-    pixels = numel(meanFaceGlobal)
+    imshow(reshape(meanFaceGlobal, 251, 221))
+
+    
+    pixels = numel(meanFaceGlobal);
     face = double(x(1:pixels)) - meanFaceGlobal;
     
     thisW = F' * face;
