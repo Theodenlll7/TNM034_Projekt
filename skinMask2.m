@@ -110,7 +110,7 @@ SE = strel('rectangle', [100 5]);
 mask = imclose(mask, SE);
 SE = strel('rectangle', [220 1]);
 mask = imopen(mask, SE);
-SE = strel('disk',10);
+SE = strel('disk',50);
 mask = imdilate(mask,SE);
 mask = keepNLargestObjects(mask, 1);
 end

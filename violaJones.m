@@ -1,5 +1,6 @@
 function mask = violaJones(maskIn, imIn)
     imIn = double(maskIn).*imIn;
+    imIn = contrastStretchColor(AWB(colorCorrection(imIn),0.5),0,1);
     try
         faceDetector = vision.CascadeObjectDetector('EyePairBig');
         bbox = faceDetector(imIn);
@@ -12,18 +13,22 @@ function mask = violaJones(maskIn, imIn)
         if n2 > n 
             n2 = n;
         end    
+        if m2 > m
+            m2 = m;
+        end
+        if n1 > n
+            n1 = n;
+        end
         if m1 > m
             m1 = m;
-        end
-        if n2 < 1
-            n2 = 1;
-        end
-        if m2 < 1
-            m2 = 1;
         end    
 
         mask = zeros(n,m);
         mask(n1:n2, m1:m2) = 1;
+        size(mask);
+        SE = strel('disk', 8);
+        mask = imdilate(mask, SE);
+
     catch
         % If all hope fails...
         mask = maskIn;

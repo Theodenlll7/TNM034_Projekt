@@ -43,7 +43,7 @@ function mask = skinMask(imIn)
     SE = strel('disk', 50);
     mask = imclose(mask, SE);
     mask = imfill(mask, 'holes');
-    SE = strel('disk', 10);
+    SE = strel('disk', 8);
     mask = imdilate(mask, SE);
 
 
