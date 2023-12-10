@@ -43,8 +43,8 @@ function imgNormalized = faceNormalization(img, eye1, eye2)
 
     % Calculate the cropping window
     cropWidth = 50 + 120 / 2;
-    cropHeightAbove = 100;
-    cropHeightBelow = 150;
+    cropHeightAbove = 110;
+    cropHeightBelow = 200;
     
     cropX = round([round(eye_center(1)) - cropWidth, round(eye_center(1)) + cropWidth]);
     cropY = round([round(eye_center(2)) - cropHeightAbove, round(eye_center(2)) + cropHeightBelow]);
@@ -68,8 +68,8 @@ function imgNormalized = faceNormalization(img, eye1, eye2)
     
     % Crop the padded image
     imgCropped = paddedImage(paddedCropY(1):paddedCropY(2), paddedCropX(1):paddedCropX(2), :);
-    
-    imgNormalized = contrastStretchColor(AWB(colorCorrection(imgCropped),1), 0, 1);
+    imgNormalized = imgCropped;
+    %imgNormalized = contrastStretchColor(AWB(colorCorrection(imgCropped),1), 0, 1);
 
     %% Color
     imgNormalized = rgb2gray(imgNormalized);

@@ -3,13 +3,13 @@ function creatFisherfaces()
     % Load and preprocess face data, see function below
     [faceData, classIds, numImages] = prepData;
     
-    % Extract unique class IDs and count occurrences
+      % Extract unique class IDs and count occurrences
     uniqueIDs = unique(classIds);
     numClasses = numel(uniqueIDs);
     
     % Count occurrences for each class
-    classCounts = containers.Map('KeyType', 'double', 'ValueType', 'double');
-    for i = 1:numel(uniqueIDs)
+    classCounts = zeros(1,numClasses);
+    for i = 1:numClasses
         count = sum(classIds == uniqueIDs(i));
         classCounts(uniqueIDs(i)) = count;
     end
@@ -19,26 +19,15 @@ function creatFisherfaces()
     % Number of pixels in each image
     numPixels = numel(faceVectors{1}); 
     
-    % Calculate mean face for each class
-    classmeanFaces = zeros(numPixels, numClasses);
-    for i = 1:numImages
-        classmeanFaces(:, classIds(i)) = classmeanFaces(:, classIds(i)) + faceVectors{i};
-    end
-    
-    % Normalize by the occurrences of each class
-    for i = 1:numClasses
-        classmeanFaces(:, i) = classmeanFaces(:, i) / classCounts(i);
-    end
-    
-    meanFaceGlobal = mean(classmeanFaces, 2);
-    
-    %% PCA
-    % Combine faceVectors to form X (each row represents an image)
     X = zeros(numPixels, numImages);
     for i = 1:numImages
         X(:, i) = faceVectors{i}';
     end
+
+    meanFaceGlobal = mean(X, 2);
     
+    %% PCA
+    % Combine faceVectors to form X (each row represents an image)
     A = X - meanFaceGlobal;
     
     % Compute PCA
@@ -50,17 +39,20 @@ function creatFisherfaces()
     
     % Project on PCA eigenfaces
     W_pca = A * U_pca;
-    X1 = X(:, order);
-    p_x = W_pca' * X1;
-    pMeanFace = W_pca' * meanFaceGlobal;
-    
-    % Project class mean faces on PCA eigenfaces
-    for i = 1:numClasses
-        pMeanClassFace(:, i) = W_pca' * classmeanFaces(:, i);
+    p_x = W_pca' * A;
+
+    pMeanClassFace = zeros(size(p_x, 1), numClasses);
+    for i = 1:numImages
+        pMeanClassFace(:, classIds(i)) = pMeanClassFace(:, classIds(i)) + p_x(:,i);
     end
+
+    pMeanClassFace = pMeanClassFace ./ classCounts;
+    pMeanFace = mean(p_x, 2);
 
     %%
     
+    %% Compute FLD
+
     % Calculate Between-class Scatter Matrix (S_b)
     S_b = zeros(numImages - numClasses);
     for i = 1:numClasses
@@ -81,25 +73,39 @@ function creatFisherfaces()
         end
     end
     
-    %% Compute Fisherfaces (FLD)
     [W_fld, eigenValues] = eig(S_b, S_w);
     [~, order] = sort(diag(eigenValues), 'descend');
     W_fld = W_fld(:, order);
-    W_fld = W_fld(:, 1:numImages - numClasses); % N-c Fisherfaces
+    %W_fld = W_fld(:, 1:numImages - numClasses); % N-c Fisherfaces
+    W_fld = W_fld(:, 1:numClasses-1); % N-c Fisherfaces
     
-    % Combine PCA and FLD to get the final set of Fisherfaces
+    %% Combine PCA and FLD to get the W_opt (Fisherfaces)
     % See refrence report
-    F = (W_fld' * W_pca')';
-    F = normalize(F);
-    
+    W_opt = (W_fld' * W_pca')';
+    W_opt = normalize(W_opt, 1, 'norm');
+
     % Project faces onto Fisherfaces
-    W = F' * X;
-    
+    W = W_opt' * X;
     % Save the trained Fisherface model
-    save("trained_fisher_model", 'meanFaceGlobal', 'W', 'F', 'classIds');
+    save("trained_fisher_model", 'W', 'W_opt', 'classIds');
     disp("Succsesfully created fisher face model")
+
+    % Reshape Fisherfaces back to image format
+    imageSize = size(faceData{1}); % Set your image size accordingly
+    montageImages(W_opt,imageSize);
 end
 
+function montageImages(inputImages, singleImageSize)
+    numImages = size(inputImages, 2);
+    processedImages = cell(1, numImages);
+
+    for idx = 1:numImages
+        reshapedImage = reshape(inputImages(:, idx), singleImageSize);
+        scaledImage = rescale(reshapedImage, 0, 1);
+        processedImages{idx} = double(scaledImage);
+    end
+    montage(processedImages);
+end
 
 function [faceData, classIds, numImages] = prepData()
     % Load face images from a folder
@@ -123,7 +129,6 @@ function [faceData, classIds, numImages] = prepData()
             faceData{validImages + 1} = faceNormalization(img, eye1, eye2);
             classIds(validImages + 1) = number(allImages(i).name);
             validImages = validImages + 1;
-
         end
     end
     
