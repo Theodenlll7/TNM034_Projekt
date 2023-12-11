@@ -14,7 +14,7 @@ function id = tnm034(im)
     [eye1,eye2] = findEyes(im);    
     try
         normalized_img = faceNormalization(im,eye1,eye2);
-        [closest_id, distance] = getFaceId(normalized_img, 18); % A normal dist between two difrent images is < 0.9*10^6 (PCA)
+        [closest_id, distance] = getFaceId(normalized_img, 18);
         if(distance < threshold); id = closest_id;
         else; id = 0;
         end

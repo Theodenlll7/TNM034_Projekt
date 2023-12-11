@@ -3,7 +3,7 @@ function creatFisherfaces()
     % Load and preprocess face data, see function below
     [faceData, classIds, numImages] = prepData;
     
-      % Extract unique class IDs and count occurrences
+    % Extract unique class IDs and count occurrences
     uniqueIDs = unique(classIds);
     numClasses = numel(uniqueIDs);
     
@@ -48,8 +48,6 @@ function creatFisherfaces()
 
     pMeanClassFace = pMeanClassFace ./ classCounts;
     pMeanFace = mean(p_x, 2);
-
-    %%
     
     %% Compute FLD
 
